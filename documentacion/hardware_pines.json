@@ -1,0 +1,21 @@
+{
+  "project": "banda transportadora",
+  "board": "IdeaBoard (ESP32 WROOM)",
+  "perifericos": [
+    {
+      "componente": "motor puente H A (L9110S A-IA)",
+      "pin": 12,
+      "tipo": "output PWM (LEDC canal 0)"
+    },
+    {
+      "componente": "motor puente H B (L9110S A-IB)",
+      "pin": 14,
+      "tipo": "output PWM (LEDC canal 1)"
+    },
+    {
+      "componente": "microinterruptor de paro de emergencia",
+      "pin": 33,
+      "tipo": "input digital, INPUT_PULLUP, interrupcion FALLING"
+    }
+  ]
+}
