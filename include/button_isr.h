@@ -1,7 +1,13 @@
 #pragma once
 #include <stdint.h>
 
-// Paro de emergencia: microinterruptor entre IO33 y GND (INPUT_PULLUP, flanco FALLING).
-void     buttonInit();
-bool     isButtonPressed();    // true UNA vez por pulsacion valida (consume el evento)
-uint64_t buttonPressCount();   // total acumulado; lectura atomica de 64 bits
+void     buttonInit();          // configura los 3 botones con interrupcion
+
+// Paro de emergencia (IO33): lleva la FSM a FAULT
+bool     isButtonPressed();     // true una vez por pulsacion
+uint64_t buttonPressCount();    // total acumulado (64 bits, leido bajo spinlock)
+bool     emergencyActive();     // true si el boton de emergencia esta presionado ahora
+
+// Botones digitales de operacion normal (NO provocan FAULT)
+bool     isStartPressed();      // arranque (IO32)
+bool     isStopPressed();       // paro (IO25)

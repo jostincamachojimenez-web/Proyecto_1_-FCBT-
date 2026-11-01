@@ -4,18 +4,33 @@
 
 ```mermaid
 graph TD
+    INICIO([Encendido / RESET])
     IDLE((IDLE))
     RUNNING((RUNNING))
     FAULT((FAULT))
 
-    IDLE -- "BTN_PRESS\n[onStart]" --> RUNNING
-    RUNNING -- "BTN_PRESS (paro emergencia)\n[onFault]" --> FAULT
-    RUNNING -- "TIMEOUT 15 s\n[onReset]" --> IDLE
-    FAULT -- "BTN_PRESS\n[onReset]" --> IDLE
+    INICIO -->|"fsmInit()<br/>setup() despacha CMD_START"| IDLE
 
-    IDLE -. "NONE / TIMEOUT\n[onNoOp]" .-> IDLE
-    RUNNING -. "NONE\n[onNoOp]" .-> RUNNING
-    FAULT -. "NONE / TIMEOUT\n[onNoOp]" .-> FAULT
+    IDLE -->|"CMD_START<br/>onStart (rampa suave)"| RUNNING
+    RUNNING -->|"CMD_STOP<br/>onStop (frenado)"| IDLE
+
+    IDLE -->|"BTN_PRESS (emergencia IO33)<br/>onFault"| FAULT
+    RUNNING -->|"BTN_PRESS (emergencia IO33)<br/>onFault"| FAULT
+
+    RUNNING -.->|"TIMEOUT 20 ms<br/>onRamp"| RUNNING
+    FAULT -.->|"CMD_START / CMD_STOP<br/>onLocked"| FAULT
+
+    FAULT ==>|"RESET de la tarjeta<br/>(única salida, por hardware)"| INICIO
+
+    classDef idle fill:#dbeafe,stroke:#1e40af,stroke-width:2px,color:#000
+    classDef running fill:#dcfce7,stroke:#166534,stroke-width:2px,color:#000
+    classDef fault fill:#fee2e2,stroke:#991b1b,stroke-width:2px,color:#000
+    classDef start fill:#f3f4f6,stroke:#4b5563,stroke-width:2px,color:#000
+
+    class IDLE idle
+    class RUNNING running
+    class FAULT fault
+    class INICIO start
 ```
 
 ## Fase 1: Entorno y Control de Versiones
